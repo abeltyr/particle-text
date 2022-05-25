@@ -92,19 +92,19 @@ const animate = () => {
       particleMesh.material.uniforms.elapsedTime.value = elapsedTime + 50;
       if (
         !particleMesh.material.uniforms.randomize.value &&
-        particleMesh.material.uniforms.factor.value < 75
+        particleMesh.material.uniforms.factor.value < 1000
       ) {
         particleMesh.material.uniforms.factor.value =
-          particleMesh.material.uniforms.factor.value + 3.5;
+          particleMesh.material.uniforms.factor.value + 2.5;
       } else if (
         !particleMesh.material.uniforms.randomize.value &&
-        particleMesh.material.uniforms.factor.value >= 75 &&
-        particleMesh.material.uniforms.factor.value < 500
+        particleMesh.material.uniforms.factor.value >= 1000 &&
+        particleMesh.material.uniforms.factor.value < 2000
       ) {
         particleMesh.material.uniforms.factor.value =
-          particleMesh.material.uniforms.factor.value + 50;
+          particleMesh.material.uniforms.factor.value + 5;
       }
-      if (particleMesh.material.uniforms.factor.value >= 500) {
+      if (particleMesh.material.uniforms.factor.value >= 2000) {
         particleMesh.material.uniforms.done.value = true;
       }
     }
@@ -130,7 +130,6 @@ document.addEventListener("mousedown", (event) => {
   const distance = -camera.position.z / dir.z;
   camera.position.clone().add(dir.multiplyScalar(distance));
   if (particleMesh) {
-    particleMesh.material.uniforms.randomize.value = true;
     particleMesh.material.uniforms.ease.value = 0.01;
   }
 });
@@ -142,7 +141,9 @@ document.addEventListener("mousemove", (event) => {
 
 document.addEventListener("mouseup", () => {
   if (particleMesh) {
-    particleMesh.material.uniforms.randomize.value = false;
+    particleMesh.material.uniforms.randomize.value = true;
+    particleMesh.material.uniforms.done.value = false;
+    particleMesh.material.uniforms.factor.value = 1;
     particleMesh.material.uniforms.ease.value = 0.05;
   }
 });

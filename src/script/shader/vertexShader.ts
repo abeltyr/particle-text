@@ -60,10 +60,14 @@ const vertexShader = () => {
 
         float angle = atan(dy ,dx) ;
         
-        if(factor < 500.0 && !done){
+        if(factor < 2000.0 && !done){
             float sizeAdjustment = randomize ?0.8:1.2;
-            px -= cos(random(vec2(px,py))*elapsedTime) * 4.0 *elapsedTime /factor;
-            py -= sin(random(vec2(px,py))*elapsedTime) * 4.0 *elapsedTime /factor;
+            float factorMultiple = factor <1000.0 ?50.0:5.0;
+            // px -= cos(random(vec2(px,py))*elapsedTime) * 4.0 *elapsedTime /factor;
+            // py -= sin(random(vec2(px,py))*elapsedTime) * 4.0 *elapsedTime /factor;
+
+            px -= cos(angle) *elapsedTime*(50.0) /(factor * factorMultiple)  ;
+            py -= sin(angle) *elapsedTime*(50.0)/(factor *factorMultiple   );
             sizeData = size * sizeAdjustment * ( 500.0 / -data.z );  
         }
          if(show == 1.0){
@@ -72,8 +76,10 @@ const vertexShader = () => {
             sizeData = size/ 1.8 * ( 500.0 / -data.z ) ;
         }
         else if(done){
-            px -= cos(elapsedTime*angle) *elapsedTime*(floatingArea1) /20.0 ;
-            py -= sin(elapsedTime*angle) *elapsedTime*(floatingArea1)/20.0 ;
+            // px -= cos(elapsedTime*angle) *elapsedTime*(floatingArea1) /20.0 ;
+            // py -= sin(elapsedTime*angle) *elapsedTime*(floatingArea1)/20.0 ;
+            px -= cos(angle) *elapsedTime*(50.0) /( 50.0)  ;
+            py -= sin(angle) *elapsedTime*(50.0)/(50.0   );
             sizeData = size * 1.2 * ( 500.0 / -data.z );  
             // newColor = vec3(0.25 , 0.3  , 0.35 ); 
             if (
