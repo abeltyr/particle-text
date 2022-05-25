@@ -74,8 +74,6 @@ const clock = new THREE.Clock();
 let raycaster = new THREE.Raycaster();
 
 const animate = () => {
-  const time = ((0.001 * performance.now()) % 12) / 12;
-  const zigzagTime = (1 + Math.sin(time * 2 * Math.PI)) / 6;
   renderer.render(scene, camera); // render the scene using the camera
 
   const elapsedTime = clock.getElapsedTime();
@@ -92,17 +90,17 @@ const animate = () => {
       particleMesh.material.uniforms.elapsedTime.value = elapsedTime + 50;
       if (
         !particleMesh.material.uniforms.randomize.value &&
-        particleMesh.material.uniforms.factor.value < 1000
-      ) {
-        particleMesh.material.uniforms.factor.value =
-          particleMesh.material.uniforms.factor.value + 2.5;
-      } else if (
-        !particleMesh.material.uniforms.randomize.value &&
-        particleMesh.material.uniforms.factor.value >= 1000 &&
-        particleMesh.material.uniforms.factor.value < 2000
+        particleMesh.material.uniforms.factor.value < 150
       ) {
         particleMesh.material.uniforms.factor.value =
           particleMesh.material.uniforms.factor.value + 5;
+      } else if (
+        !particleMesh.material.uniforms.randomize.value &&
+        particleMesh.material.uniforms.factor.value >= 150 &&
+        particleMesh.material.uniforms.factor.value < 2000
+      ) {
+        particleMesh.material.uniforms.factor.value =
+          particleMesh.material.uniforms.factor.value + 10;
       }
       if (particleMesh.material.uniforms.factor.value >= 2000) {
         particleMesh.material.uniforms.done.value = true;
@@ -116,6 +114,11 @@ export const createScene = (el) => {
   renderer = new THREE.WebGLRenderer({ antialias: true, canvas: el });
   resize();
   animate();
+  setTimeout(() => {
+    if (particleMesh) {
+      particleMesh.material.uniforms.randomize.value = false;
+    }
+  }, 5000);
 };
 
 window.addEventListener("resize", resize);
@@ -141,9 +144,57 @@ document.addEventListener("mousemove", (event) => {
 
 document.addEventListener("mouseup", () => {
   if (particleMesh) {
-    particleMesh.material.uniforms.randomize.value = true;
-    particleMesh.material.uniforms.done.value = false;
-    particleMesh.material.uniforms.factor.value = 1;
+    particleMesh.material.uniforms.randomize.value = false;
     particleMesh.material.uniforms.ease.value = 0.05;
   }
 });
+
+document.addEventListener("touchstart", touchHandler, true);
+document.addEventListener("touchmove", touchHandler, true);
+document.addEventListener("touchend", touchHandler, true);
+document.addEventListener("touchcancel", touchHandler, true);
+
+function touchHandler(event) {
+  var touches = event.changedTouches,
+    first = touches[0],
+    type = "";
+  switch (event.type) {
+    case "touchstart":
+      type = "mousedown";
+      break;
+    case "touchmove":
+      type = "mousemove";
+      break;
+    case "touchend":
+      type = "mouseup";
+      break;
+    default:
+      return;
+  }
+
+  // initMouseEvent(type, canBubble, cancelable, view, clickCount,
+  //                screenX, screenY, clientX, clientY, ctrlKey,
+  //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+  var simulatedEvent = document.createEvent("MouseEvent");
+  simulatedEvent.initMouseEvent(
+    type,
+    true,
+    true,
+    window,
+    1,
+    first.screenX,
+    first.screenY,
+    first.clientX,
+    first.clientY,
+    false,
+    false,
+    false,
+    false,
+    0 /*left*/,
+    null,
+  );
+
+  first.target.dispatchEvent(simulatedEvent);
+  event.preventDefault();
+}

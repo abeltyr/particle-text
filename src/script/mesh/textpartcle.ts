@@ -29,11 +29,11 @@ const particleText = ({
     // text: "Say Hello To\n  The World",
     text: "Hello I Am\n Abel Lamesgen",
     // text: "F U T U R E\nI S   N O W",
-    amount: 1500,
+    amount: 2500,
     particleSize: 1,
     particleColor: 0xffffff,
-    textSize: 20,
-    area: 500,
+    textSize: 12,
+    area: 1500,
     ease: 0.05,
   };
   /**
